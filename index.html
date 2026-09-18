@@ -17,14 +17,119 @@
 </head>
 <body>
 
-<main class="screen">
+<!-- ======================= СЕГОДНЯ ======================= -->
+<main class="screen" id="screen-today">
   <h1 class="title">Сегодня</h1>
 
-  <button id="add" class="add" type="button">+30 мин</button>
+  <!-- План на неделю -->
+  <section class="plan" id="plan">
+    <p class="label">План на неделю</p>
+    <button class="plan-text" id="plan-text" type="button"></button>
+    <div class="editor" id="plan-editor" hidden>
+      <input class="field" id="plan-input" type="text" maxlength="80"
+             placeholder="Например: слушать подкаст по 30 минут">
+      <div class="editor-actions">
+        <button class="btn-quiet" id="plan-cancel" type="button">Отмена</button>
+        <button class="btn-solid" id="plan-save" type="button">Сохранить</button>
+      </div>
+    </div>
+  </section>
 
-  <p id="empty" class="empty">Пока ничего не записано</p>
-  <ul id="list" class="list"></ul>
+  <!-- Запись в два тапа -->
+  <div class="add-block">
+    <button class="add" id="add-open" type="button" aria-label="Добавить запись">+</button>
+    <div class="chips" id="chips" hidden>
+      <button class="chip" type="button" data-minutes="15">15 мин</button>
+      <button class="chip" type="button" data-minutes="30">30 мин</button>
+      <button class="chip" type="button" data-minutes="45">45 мин</button>
+      <button class="chip" type="button" data-minutes="60">60 мин</button>
+    </div>
+  </div>
+
+  <p class="zero" id="today-note"></p>
+
+  <!-- Неделя полосками -->
+  <section class="week" id="week">
+    <div class="bars" id="bars"></div>
+    <p class="count" id="count"></p>
+  </section>
+
+  <!-- Экран возвращения -->
+  <section class="comeback" id="comeback" hidden>
+    <p class="comeback-text">Я тебя дождался, рад, что вижу снова. В жизни многое
+      случается. То, что было — уже прошло и нет смысла корить тебя, смысл есть
+      в том, чтобы возобновить путь, поэтому продолжай взбираться, как бы тяжело
+      это ни оказалось.</p>
+    <div class="totals" id="totals"></div>
+  </section>
 </main>
+
+<!-- ======================= ЗАМЕР ========================= -->
+<main class="screen" id="screen-check" hidden>
+  <h1 class="title">Замер</h1>
+
+  <p class="lead">Раз в месяц, три минуты. Незнакомое аудио на минуту, один раз,
+    без перемоток. Записать расслышанное, сверить с расшифровкой, посчитать долю
+    верных слов.</p>
+
+  <p class="dim" id="check-due"></p>
+
+  <div class="editor">
+    <div class="pair">
+      <input class="field" id="check-right" type="number" inputmode="numeric"
+             min="0" placeholder="Верных слов">
+      <input class="field" id="check-total" type="number" inputmode="numeric"
+             min="1" placeholder="Всего слов">
+    </div>
+    <button class="btn-solid wide" id="check-save" type="button">Записать замер</button>
+    <p class="error" id="check-error" hidden></p>
+  </div>
+
+  <ul class="list" id="check-list"></ul>
+  <p class="dim small" id="check-hint" hidden>Материал каждый раз новый, поэтому
+    разброс около ±8%. Это диапазон, а не приговор.</p>
+</main>
+
+<!-- ======================== ПУТЬ ========================= -->
+<main class="screen" id="screen-path" hidden>
+  <h1 class="title">Путь</h1>
+
+  <section class="baseline">
+    <p class="label">Точка отсчёта</p>
+    <p class="baseline-text" id="baseline-text"></p>
+  </section>
+
+  <button class="btn-solid wide" id="path-open" type="button">Добавить запись</button>
+
+  <div class="editor" id="path-editor" hidden>
+    <input class="field" id="path-before" type="text" maxlength="120" placeholder="Раньше…">
+    <input class="field" id="path-after" type="text" maxlength="120" placeholder="Теперь…">
+    <p class="dim small">Если фразу так не построить — это обычный день, а не запись.</p>
+    <div class="editor-actions">
+      <button class="btn-quiet" id="path-cancel" type="button">Отмена</button>
+      <button class="btn-solid" id="path-save" type="button">Сохранить</button>
+    </div>
+    <p class="error" id="path-error" hidden></p>
+  </div>
+
+  <ul class="list" id="path-list"></ul>
+  <p class="dim small" id="path-hint">Ориентир — одна-три записи в месяц.
+    Правится сутки, потом замерзает.</p>
+</main>
+
+<!-- ====================== РАЗНИЦА ======================== -->
+<main class="screen" id="screen-diff" hidden>
+  <h1 class="title">Разница</h1>
+  <div id="diff-body"></div>
+</main>
+
+<!-- ======================= Вкладки ======================= -->
+<nav class="tabs">
+  <button class="tab is-active" type="button" data-screen="today">Сегодня</button>
+  <button class="tab" type="button" data-screen="check">Замер</button>
+  <button class="tab" type="button" data-screen="path">Путь</button>
+  <button class="tab" type="button" data-screen="diff">Разница</button>
+</nav>
 
 <script src="app.js"></script>
 </body>

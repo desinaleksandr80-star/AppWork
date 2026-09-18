@@ -381,13 +381,17 @@ body {
   background: var(--card);
 }
 
+.step .label {
+  margin: 0 0 6px;
+}
+
 .step-before {
-  margin: 0;
+  margin: 0 0 18px;
   color: var(--text-dim);
 }
 
 .step-after {
-  margin: 6px 0 0;
+  margin: 0;
   font-size: 19px;
 }
 
@@ -445,6 +449,12 @@ body {
   color: var(--accent);
   font-size: 19px;
   font-weight: 600;
+}
+
+.diff-when {
+  margin: 16px 0 0;
+  color: var(--text-dim);
+  font-size: 15px;
 }
 
 /* ---- Цель и лестница ------------------------------------------------ */

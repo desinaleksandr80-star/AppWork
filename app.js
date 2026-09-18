@@ -22,6 +22,7 @@ var state = {
   baseline: null, // {text, ts} — пишется один раз и не меняется
   path: [],       // {id, before, after, ts}
   checks: [],     // {id, right, total, ts}
+  now: null,      // {text, ts} — где ты сейчас, переписывается когда захочешь
   goal: null,     // {text, ts}
   step: 0,        // текущая ступень лестницы
   tasks: {}       // {'3a': {minutes, ts}} — выполненные задачи
@@ -112,6 +113,7 @@ function load() {
         });
         if (saved.plan) state.plan = saved.plan;
         if (saved.baseline) state.baseline = saved.baseline;
+        if (saved.now) state.now = saved.now;
         if (saved.goal) state.goal = saved.goal;
         if (typeof saved.step === 'number') state.step = saved.step;
         if (saved.tasks && typeof saved.tasks === 'object') state.tasks = saved.tasks;
@@ -467,6 +469,33 @@ function closePathEditor() {
   pathOpen.hidden = false;
 }
 
+var nowText = document.getElementById('now-text');
+var nowEditor = document.getElementById('now-editor');
+var nowInput = document.getElementById('now-input');
+
+nowText.addEventListener('click', function () {
+  nowInput.value = state.now ? state.now.text : '';
+  nowEditor.hidden = false;
+  nowText.hidden = true;
+  nowInput.focus();
+});
+
+document.getElementById('now-cancel').addEventListener('click', function () {
+  nowEditor.hidden = true;
+  nowText.hidden = false;
+});
+
+document.getElementById('now-save').addEventListener('click', function () {
+  var text = nowInput.value.trim();
+  if (!text) return;
+  state.now = { text: text, ts: Date.now() };
+  save();
+  nowEditor.hidden = true;
+  nowText.hidden = false;
+  renderPath();
+  renderDiff();
+});
+
 pathOpen.addEventListener('click', function () { openPathEditor(null); });
 document.getElementById('path-cancel').addEventListener('click', closePathEditor);
 
@@ -501,19 +530,30 @@ function renderPath() {
   var list = document.getElementById('path-list');
   document.getElementById('baseline-text').textContent = state.baseline.text;
 
+  nowText.textContent = state.now ? state.now.text : 'Ещё не описано';
+  nowText.className = state.now ? 'plan-text' : 'plan-text is-empty';
+
   list.textContent = '';
   state.path.slice().sort(function (a, b) { return b.ts - a.ts; })
     .forEach(function (entry) {
       var item = document.createElement('li');
       item.className = 'step';
 
+      var beforeLabel = document.createElement('p');
+      beforeLabel.className = 'label';
+      beforeLabel.textContent = 'Раньше';
+
       var before = document.createElement('p');
       before.className = 'step-before';
-      before.textContent = 'Раньше ' + entry.before;
+      before.textContent = entry.before;
+
+      var afterLabel = document.createElement('p');
+      afterLabel.className = 'label';
+      afterLabel.textContent = 'Теперь';
 
       var after = document.createElement('p');
       after.className = 'step-after';
-      after.textContent = 'Теперь ' + entry.after;
+      after.textContent = entry.after;
 
       var foot = document.createElement('div');
       foot.className = 'step-foot';
@@ -532,7 +572,9 @@ function renderPath() {
         foot.appendChild(edit);
       }
 
+      item.appendChild(beforeLabel);
       item.appendChild(before);
+      item.appendChild(afterLabel);
       item.appendChild(after);
       item.appendChild(foot);
       list.appendChild(item);
@@ -541,7 +583,7 @@ function renderPath() {
 
 /* ---- Экран «Разница» ------------------------------------------------ */
 
-function diffCard(label, from, to, number) {
+function diffCard(label, from, to, number, numberClass) {
   var card = document.createElement('section');
   card.className = 'diff';
 
@@ -567,7 +609,7 @@ function diffCard(label, from, to, number) {
 
   if (number) {
     var numberEl = document.createElement('p');
-    numberEl.className = 'diff-number';
+    numberEl.className = numberClass || 'diff-number';
     numberEl.textContent = number;
     card.appendChild(numberEl);
   }
@@ -586,14 +628,14 @@ function renderDiff() {
   var body = document.getElementById('diff-body');
   body.textContent = '';
 
-  var steps = state.path.slice().sort(function (a, b) { return b.ts - a.ts; });
-  if (steps.length) {
+  if (state.now) {
     body.appendChild(diffCard('Состояние',
-      state.baseline.text, steps[0].after, null));
+      state.baseline.text, state.now.text,
+      'Описано ' + formatDate(state.now.ts), 'diff-when'));
   } else {
     body.appendChild(quietNote(
       'Точка отсчёта: ' + state.baseline.text +
-      '. Сравнивать пока не с чем — первая запись в «Пути» создаст разницу.'));
+      '. Сравнивать пока не с чем — опиши на экране «Путь», где ты сейчас.'));
   }
 
   var checks = state.checks.slice().sort(function (a, b) { return a.ts - b.ts; });

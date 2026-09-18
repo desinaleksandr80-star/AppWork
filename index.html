@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#F0EEE6" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#191816" media="(prefers-color-scheme: dark)">
 
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -61,6 +61,35 @@
       в том, чтобы возобновить путь, поэтому продолжай взбираться, как бы тяжело
       это ни оказалось.</p>
     <div class="totals" id="totals"></div>
+  </section>
+</main>
+
+<!-- ======================== ЦЕЛЬ ========================= -->
+<main class="screen" id="screen-goal" hidden>
+  <h1 class="title">Цель</h1>
+
+  <section class="plan">
+    <p class="label">Глобальная цель</p>
+    <button class="plan-text" id="goal-text" type="button"></button>
+    <div class="editor" id="goal-editor" hidden>
+      <input class="field" id="goal-input" type="text" maxlength="100">
+      <div class="editor-actions">
+        <button class="btn-quiet" id="goal-cancel" type="button">Отмена</button>
+        <button class="btn-solid" id="goal-save" type="button">Сохранить</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="step-head">
+    <p class="label" id="step-label"></p>
+    <h2 class="step-title" id="step-title"></h2>
+  </section>
+
+  <div id="tasks"></div>
+
+  <section class="step-over" id="step-over" hidden>
+    <p class="step-over-text" id="step-over-text"></p>
+    <button class="btn-solid wide" id="step-next" type="button">Следующая ступень</button>
   </section>
 </main>
 
@@ -126,11 +155,12 @@
 <!-- ======================= Вкладки ======================= -->
 <nav class="tabs">
   <button class="tab is-active" type="button" data-screen="today">Сегодня</button>
+  <button class="tab" type="button" data-screen="goal">Цель</button>
   <button class="tab" type="button" data-screen="check">Замер</button>
   <button class="tab" type="button" data-screen="path">Путь</button>
   <button class="tab" type="button" data-screen="diff">Разница</button>
 </nav>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
